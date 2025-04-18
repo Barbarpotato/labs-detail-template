@@ -4,6 +4,10 @@ import { Box, Button, Center, Heading, Image, useDisclosure } from "@chakra-ui/r
 import { useEffect, useRef, useState } from 'react';
 import Darwin from '../components/Darwin';
 
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css'; // or another theme
+
+
 export async function getStaticPaths() {
     const res = await fetch('https://api-barbarpotato.vercel.app/labs?index=6b86b273ff34f');
     if (!res.ok) return { paths: [], fallback: false };
@@ -73,8 +77,6 @@ export default function ArticlePage({ article }) {
         preTags.forEach(tag => {
             tag.style.width = "1024px";
             tag.parentNode.style.overflowX = 'scroll';
-            tag.parentNode.style.marginBlock = '15px';
-            tag.style.backgroundColor = '#272822';
         });
 
         codeTags.forEach(tag => {
@@ -87,6 +89,13 @@ export default function ArticlePage({ article }) {
 
         if (contentDiv) observer.observe(contentDiv, { childList: true, subtree: true });
         return () => observer.disconnect();
+    }, [article]);
+
+    useEffect(() => {
+        const blocks = document.querySelectorAll('.content pre code');
+        blocks.forEach(block => {
+            hljs.highlightElement(block);
+        });
     }, [article]);
 
     return (

@@ -111,15 +111,6 @@ section {
     background-color: #292b37 !important;
 }
 
-pre {
-    padding: 5px;
-    border-radius: 10px;
-    white-space: pre-wrap;
-    /* Allows the text to wrap */
-    background-color: #2b2b2b;
-    font-family: Arial;
-    color: white;
-}
 
 .content li {
     color: white;
@@ -188,21 +179,26 @@ pre {
     color: whitesmoke;
 }
 
-/* styles.css */
-.custom-pre {
-    background-color: #f5f5f5;
-    color: #333;
-    padding: 10px;
-    border-radius: 5px;
+
+.content pre code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
 }
 
-.custom-code {
-    /* Or scroll */
-    background-color: #272822;
-    color: #f8f8f2;
-    padding: 2px 4px;
-    border-radius: 3px;
+/* Responsive font sizes */
+@media (max-width: 768px) {
+    .content pre code {
+        font-size: 0.85rem;
+    }
 }
+
+@media (max-width: 480px) {
+    .content pre code {
+        font-size: 0.75rem;
+    }
+}
+
+
 
 .App {
     text-align: center;
