@@ -272,11 +272,12 @@ export default function ArticlePage({ article }) {
                         ref={btnRef}
                         onClick={onOpen}
                         style={{
+                            opacity: "70%",
                             position: 'fixed',
                             bottom: '20px',
                             right: '20px',
                             zIndex: 1000,
-                            background: '#6B46C1',
+                            backgroundColor: #ff79c6;
                             borderRadius: '50%',
                             padding: '12px',
                             border: 'none'
@@ -298,7 +299,7 @@ export default function ArticlePage({ article }) {
                     </Button>
                 )}
                 <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
-            </article>
+            </article >
         </>
     );
 }
