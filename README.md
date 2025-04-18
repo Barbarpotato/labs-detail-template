@@ -1,29 +1,56 @@
-# Project Overview
-This project is a Next.js application built specifically to leverage Static Site Generation (SSG) for delivering article content. Articles are generated as static pages during the build process to ensure optimal performance and scalability. The deployment process is automated, triggered by a webhook from an admin page whenever content updates are made.
 
-## Development Workflow
-The application fetches article content from a backend service via an API endpoint. Articles are pre-rendered during the build process using the Next.js Static Site Generation (SSG) feature.
-### Fetching Articles from Backend API
+# 🔁 Labs Details Page: Multi-Cluster Update Workflow
 
-### Implementing getStaticProps and getStaticPaths
-The Next.js pages for articles are pre-rendered using the getStaticPaths and getStaticProps methods to retrieve data from the backend service.
-- getStaticPaths: Fetches a list of article slugs from the backend service and defines paths for SSG.
-- getStaticProps: Fetches article details for each static page at build time.
+## 📌 Problem
+When all nodes are already deployed, updating the lab details page across all clusters becomes cumbersome. A single node update should propagate to all nodes seamlessly to avoid inconsistencies and manual overhead.
 
-##  Deployment Workflow
-### Webhook and Deployment Process
-Deployment is automated using GitHub Actions. When changes are pushed to the main branch or content updates are triggered from the admin page, GitHub Actions execute the CI/CD pipeline.
+## ✅ Goal
+Ensure **one trigger (e.g., a commit)** updates the **lab details page across all cluster nodes**.
 
-### Webhook Trigger
-The webhook is set up in the admin page to trigger a GitHub Actions workflow that redeploys the Next.js application.
+## 🛠️ Solution Overview
+We use a **centralized template repo** (`lab-detail-template`) that, upon commit, triggers a pipeline to update **all clusters**.
 
-### GitHub Actions Workflow
-The GitHub Actions workflow listens for the content-update event and runs the deployment pipeline.
+## 🧩 Components & Flow
 
-### CI/CD Workflow Overview
-1. Content Update: When content is updated from the admin dashboard, a webhook triggers a repository_dispatch event in GitHub Actions.
-2. Build & Deploy: The workflow:
-    - Fetches the latest code.
-    - Installs dependencies.
-    - Builds the Next.js project with updated article content.
-    - Deploys the application to the hosting platform (e.g., Vercel).
+1. **lab-detail-template**
+   - Source repo containing `[slug].js` file template for labs page.
+   - Any commit to this repo triggers the process.
+
+2. **GitHub Commit**
+   - Triggers GitHub workflow → hits API endpoint:
+     ```
+     https://api-barbarpotato.vercel.app/webhook/update-lab
+     ```
+
+3. **API Endpoint**
+   - Iterates over all nodes (`labs-1`, `labs-2`, ..., `labs-N`)
+   - Sends webhook to each node with:
+     - `index` (node identifier)
+     - `repo_name` for context
+
+4. **labs-N Nodes**
+   - Each node listens for the webhook.
+   - On trigger, starts GitHub Actions to:
+     - Clone `lab-detail-template`
+     - Replace dynamic values (e.g., `index`)
+     - Deploy the updated labs page
+
+## 🔄 End-to-End Flow
+
+```
+Commit to lab-detail-template →
+  Triggers GitHub Workflow →
+    Calls central API →
+      Loops over all labs-N nodes →
+        Sends webhooks →
+          Each node triggers GitHub Actions →
+            Clones template + replaces [slug].js →
+              Updates lab detail page
+```
+
+## 📌 Key Notes
+
+- Centralized update mechanism.
+- Supports dynamic [slug]/index-based rendering.
+- All clusters stay in sync via webhook-triggered workflows.
+- Reduces update overhead and prevents partial deployments.
