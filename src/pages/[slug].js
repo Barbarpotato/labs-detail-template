@@ -4,8 +4,9 @@ import { Box, Button, Center, Heading, Image, useDisclosure } from "@chakra-ui/r
 import { useEffect, useRef, useState } from 'react';
 import Darwin from '../components/Darwin';
 
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github-dark.css'; // or another theme
+import 'prismjs/themes/prism-tomorrow.css'; // or any theme of your choice
+import Prism from 'prismjs';
+import 'prismjs/components/prism-yaml.min.js'; // Include the language component for YAML (or other languages as needed)
 
 
 export async function getStaticPaths() {
@@ -77,25 +78,25 @@ export default function ArticlePage({ article }) {
         preTags.forEach(tag => {
             tag.style.width = "1024px";
             tag.parentNode.style.overflowX = 'scroll';
+            tag.parentNode.style.marginBlock = '15px';
+            tag.style.backgroundColor = '#272822'; // You can adjust this to fit the theme
         });
 
         codeTags.forEach(tag => {
-            tag.classList.add('custom-code');
+            tag.classList.add('language-js'); // You can specify the language here
         });
 
+        // Initialize Prism for syntax highlighting
+        Prism.highlightAll();
+
+        // Observer for dynamic content updates
         const observer = new MutationObserver(() => {
-            preTags.forEach(tag => tag.style.width = "1024px");
+            Prism.highlightAll(); // Re-apply syntax highlighting on new content
         });
 
         if (contentDiv) observer.observe(contentDiv, { childList: true, subtree: true });
-        return () => observer.disconnect();
-    }, [article]);
 
-    useEffect(() => {
-        const blocks = document.querySelectorAll('.content pre code');
-        blocks.forEach(block => {
-            hljs.highlightElement(block);
-        });
+        return () => observer.disconnect();
     }, [article]);
 
     return (
