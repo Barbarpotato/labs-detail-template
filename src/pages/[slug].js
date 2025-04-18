@@ -306,7 +306,7 @@ export default function ArticlePage({ article }) {
                         Ask Darwin AI
                     </Button>
                 )}
-                {/* <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} /> */}
+                <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
             </article >
         </>
     );
