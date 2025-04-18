@@ -277,7 +277,7 @@ export default function ArticlePage({ article }) {
                             bottom: '20px',
                             right: '20px',
                             zIndex: 1000,
-                            backgroundColor: #ff79c6;
+                            backgroundColor: '#ff79c6',
                             borderRadius: '50%',
                             padding: '12px',
                             border: 'none'
