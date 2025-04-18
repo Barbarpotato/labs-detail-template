@@ -1,5 +1,5 @@
 
-# 🔁 Labs Details Page: Multi-Cluster Update Workflow
+# Labs Details Page: Multi-Cluster Update Workflow
 
 ## 📌 Problem
 When all nodes are already deployed, updating the lab details page across all clusters becomes cumbersome. A single node update should propagate to all nodes seamlessly to avoid inconsistencies and manual overhead.
