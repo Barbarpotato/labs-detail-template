@@ -1,0 +1,30 @@
+name: Updating Labs detail FrontEnd Page on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-labs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login and deploy
+        env:
+          USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          LOGIN_RESPONSE=$(curl -s -X POST https://api-barbarpotato.vercel.app/verify/login \
+            -H "Content-Type: application/json" \
+            -d "{\"username\": \"${USERNAME}\", \"password\": \"${PASSWORD}\"}")
+
+          TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.token')
+          STATUS=$(echo "$LOGIN_RESPONSE" | jq -r '.status')
+
+          if [ "$STATUS" != "ok" ] || [ -z "$TOKEN" ]; then
+            echo "Login failed"
+            exit 1
+          fi
+
+          curl -X PUT https://api-barbarpotato.vercel.app/webhook/deploy-labs \
+            -H "Authorization: Bearer $TOKEN"
