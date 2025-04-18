@@ -78,8 +78,6 @@ export default function ArticlePage({ article }) {
         preTags.forEach(tag => {
             tag.style.width = "1024px";
             tag.parentNode.style.overflowX = 'scroll';
-            tag.parentNode.style.marginBlock = '15px';
-            tag.style.backgroundColor = '#272822'; // You can adjust this to fit the theme
         });
 
         codeTags.forEach(tag => {
@@ -308,7 +306,7 @@ export default function ArticlePage({ article }) {
                         Ask Darwin AI
                     </Button>
                 )}
-                <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
+                {/* <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} /> */}
             </article >
         </>
     );

@@ -434,6 +434,10 @@ li.next {
     border-radius: 3px;
 }
 
+pre {
+    overflow: hidden !important;
+}
+
 
 /* 
     /** LOADING SCREEN CSS
