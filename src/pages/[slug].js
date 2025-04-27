@@ -1,6 +1,9 @@
 import Head from 'next/head';
 import { MdSupportAgent } from "react-icons/md";
-import { Box, Button, Center, Heading, Image, useDisclosure, VStack, Divider } from "@chakra-ui/react";
+import {
+    Box, Button, Center, Heading, Image,
+    useDisclosure, VStack, Divider
+} from "@chakra-ui/react";
 import { Fragment, useEffect, useRef, useState } from 'react';
 
 import Darwin from '../components/Darwin';
