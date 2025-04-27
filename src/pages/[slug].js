@@ -1,12 +1,14 @@
 import Head from 'next/head';
 import { MdSupportAgent } from "react-icons/md";
-import { Box, Button, Center, Heading, Image, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Center, Heading, Image, useDisclosure, VStack, Text, Divider } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from 'react';
-import Darwin from '../components/Darwin';
 
-import 'prismjs/themes/prism-tomorrow.css'; // or any theme of your choice
+import Darwin from '../components/Darwin';
+import BlogCard from '@/components/BlogCard';
+
+import 'prismjs/themes/prism-tomorrow.css';
 import Prism from 'prismjs';
-import 'prismjs/components/prism-yaml.min.js'; // Include the language component for YAML (or other languages as needed)
+import 'prismjs/components/prism-yaml.min.js';
 
 
 export async function getStaticPaths() {
@@ -20,6 +22,7 @@ export async function getStaticPaths() {
     };
 }
 
+
 export async function getStaticProps({ params }) {
     const res = await fetch(`https://api-barbarpotato.vercel.app/labs?slug=${params.slug}`);
     if (!res.ok) return { notFound: true };
@@ -27,10 +30,26 @@ export async function getStaticProps({ params }) {
     let article = await res.json();
     if (article.data) article = article.data[0];
 
-    return { props: { article } };
+    // Fetch recommended blogs based on tags
+    const tags = article.tags.join(',');
+    const recommendedRes = await fetch(`https://api-barbarpotato.vercel.app/labs/search?tag=${tags}`);
+    const recommendedData = await recommendedRes.json();
+
+    // Ensure recommendedPosts is an array, and filter out the current article
+    const recommendedPosts = (recommendedData.data || [])
+        .filter((recommendedPost) => recommendedPost.blog_id !== article.blog_id) // Exclude current article
+        .slice(0, 3); // Return only top 3 posts
+
+    return {
+        props: {
+            article,
+            recommendedPosts
+        }
+    };
 }
 
-export default function ArticlePage({ article }) {
+
+export default function ArticlePage({ article, recommendedPosts }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const btnRef = useRef();
     const [isMobile, setIsMobile] = useState(false);
@@ -258,6 +277,7 @@ export default function ArticlePage({ article }) {
                     </>
                 )}
             </div >
+
             {/* Article Content */}
             <article>
                 <Box mx="auto" w={{ base: '70%', md: '35%' }}>
@@ -273,6 +293,36 @@ export default function ArticlePage({ article }) {
                         dangerouslySetInnerHTML={{ __html: article.description }}
                     />
                 </Box>
+
+                <Divider mx="auto" w={{ base: '70%', md: '35%' }} my={10} />
+
+                <Box mx="auto" w={{ base: '70%', md: '35%' }} borderColor="gray.200">
+                    <Heading fontWeight="bold" mb={6}>
+                        Another Recommended Labs Content
+                    </Heading>
+                    <VStack spacing={6}>
+                        {recommendedPosts.length > 0 ? (
+                            recommendedPosts.map((recommendedPost) => (
+                                <BlogCard
+                                    key={recommendedPost.blog_id}
+                                    article={{
+                                        id: recommendedPost.blog_id,
+                                        title: recommendedPost.title,
+                                        slug: recommendedPost.slug,
+                                        excerpt: recommendedPost.short_description,
+                                        date: recommendedPost.timestamp,
+                                        index: recommendedPost.index,
+                                        categories: recommendedPost.tags,
+                                        image: recommendedPost.image
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <Text>No Recommended Labs Content available.</Text>
+                        )}
+                    </VStack>
+                </Box>
+
 
                 {/* Floating Button */}
                 {isMobile ? (
@@ -306,7 +356,7 @@ export default function ArticlePage({ article }) {
                         Ask Darwin AI
                     </Button>
                 )}
-                <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
+                {/* <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} /> */}
             </article >
         </>
     );
