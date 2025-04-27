@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { MdSupportAgent } from "react-icons/md";
-import { Box, Button, Center, Heading, Image, useDisclosure, VStack, Text, Divider } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from 'react';
+import { Box, Button, Center, Heading, Image, useDisclosure, VStack, Divider } from "@chakra-ui/react";
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import Darwin from '../components/Darwin';
 import BlogCard from '@/components/BlogCard';
@@ -24,14 +24,20 @@ export async function getStaticPaths() {
 
 
 export async function getStaticProps({ params }) {
+
     const res = await fetch(`https://api-barbarpotato.vercel.app/labs?slug=${params.slug}`);
     if (!res.ok) return { notFound: true };
 
     let article = await res.json();
     if (article.data) article = article.data[0];
 
+    // find the tags from search
+    const res2 = await fetch(`https://api-barbarpotato.vercel.app/labs/search?blog_id=${article.blog_id}`);
+    const data = await res2.json();
+    const tagArticles = data.data[0];
+
     // Fetch recommended blogs based on tags
-    const tags = article.tags.join(',');
+    const tags = tagArticles.tags.join(',');
     const recommendedRes = await fetch(`https://api-barbarpotato.vercel.app/labs/search?tag=${tags}`);
     const recommendedData = await recommendedRes.json();
 
@@ -294,34 +300,34 @@ export default function ArticlePage({ article, recommendedPosts }) {
                     />
                 </Box>
 
-                <Divider mx="auto" w={{ base: '70%', md: '35%' }} my={10} />
 
-                <Box mx="auto" w={{ base: '70%', md: '35%' }} borderColor="gray.200">
-                    <Heading fontWeight="bold" mb={6}>
-                        Another Recommended Labs Content
-                    </Heading>
-                    <VStack spacing={6}>
-                        {recommendedPosts.length > 0 ? (
-                            recommendedPosts.map((recommendedPost) => (
-                                <BlogCard
-                                    key={recommendedPost.blog_id}
-                                    article={{
-                                        id: recommendedPost.blog_id,
-                                        title: recommendedPost.title,
-                                        slug: recommendedPost.slug,
-                                        excerpt: recommendedPost.short_description,
-                                        date: recommendedPost.timestamp,
-                                        index: recommendedPost.index,
-                                        categories: recommendedPost.tags,
-                                        image: recommendedPost.image
-                                    }}
-                                />
-                            ))
-                        ) : (
-                            <Text>No Recommended Labs Content available.</Text>
-                        )}
-                    </VStack>
-                </Box>
+                {recommendedPosts.length > 0 && (
+                    <Fragment>
+                        <Divider mx="auto" w={{ base: '70%', md: '35%' }} my={10} />
+                        <Box mx="auto" w={{ base: '70%', md: '35%' }} borderColor="gray.200">
+                            <Heading fontWeight="bold" mb={6}>
+                                Another Recommended Labs Content
+                            </Heading>
+                            <VStack spacing={6}>
+                                {recommendedPosts.map((recommendedPost) => (
+                                    <BlogCard
+                                        key={recommendedPost.blog_id}
+                                        article={{
+                                            id: recommendedPost.blog_id,
+                                            title: recommendedPost.title,
+                                            slug: recommendedPost.slug,
+                                            excerpt: recommendedPost.short_description,
+                                            date: recommendedPost.timestamp,
+                                            index: recommendedPost.index,
+                                            categories: recommendedPost.tags,
+                                            image: recommendedPost.image
+                                        }}
+                                    />
+                                ))}
+                            </VStack>
+                        </Box>
+                    </Fragment>
+                )}
 
 
                 {/* Floating Button */}
@@ -356,7 +362,7 @@ export default function ArticlePage({ article, recommendedPosts }) {
                         Ask Darwin AI
                     </Button>
                 )}
-                {/* <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} /> */}
+                <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
             </article >
         </>
     );
