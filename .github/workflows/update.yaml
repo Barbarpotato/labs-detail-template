@@ -1,0 +1,49 @@
+name: Update Slug Page from Template
+
+on:
+  repository_dispatch:
+    types: [update-slug-from-template]
+
+jobs:
+  update-slug:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo with push permission
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Clone template repo (public)
+        run: |
+          git clone https://github.com/Barbarpotato/labs-detail-template.git temp-template
+
+      - name: Replace files except next.config.js, include package.json
+        run: |
+          shopt -s extglob
+          rm -rf src/*
+          cp -r temp-template/src/!(next.config.mjs) src/
+          cp -f temp-template/package.json package.json
+        
+      - name: Inject index query param into fetch URL
+        run: |
+          FILE_PATH="src/pages/[slug].js"
+          INDEX=${{ github.event.client_payload.index }}
+
+          echo "Index value: $INDEX"
+
+          if [ -f "$FILE_PATH" ]; then
+            sed -i "s|\(index=\)[^'\"]*|\1${INDEX}|" "$FILE_PATH"
+          else
+            echo "File not found: $FILE_PATH"
+            exit 1
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "Barbarpotato"
+          git config user.email "darmawanjr88@gmail.com"
+          git add .          # Stage all changes
+          git reset temp-template # Unstage the file you want to exclude
+          git commit -m "Update slug page at $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes to commit"
+          git push origin HEAD:main

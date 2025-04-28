@@ -1,10 +1,13 @@
 name: Deploy to GitHub Pages
 
 on:
-  repository_dispatch:
-    types:
-      - redeploy  # Trigger workflow with a custom "redeploy" event
-
+    push:
+      branches:
+        - main  # Trigger the workflow when changes are pushed to the main branch
+    repository_dispatch:
+      types:
+        - redeploy  # Trigger the workflow with a custom "redeploy" event
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
