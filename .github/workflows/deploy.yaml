@@ -1,30 +1,35 @@
-name: Updating Labs detail FrontEnd Page on Push
+name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types:
+      - redeploy  # Trigger workflow with a custom "redeploy" event
 
 jobs:
-  deploy-labs:
+  deploy:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      actions: write
+
     steps:
-      - name: Login and deploy
-        env:
-          USERNAME: ${{ secrets.ADMIN_USERNAME }}
-          PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-        run: |
-          LOGIN_RESPONSE=$(curl -s -X POST https://api-barbarpotato.vercel.app/verify/login \
-            -H "Content-Type: application/json" \
-            -d "{\"username\": \"${USERNAME}\", \"password\": \"${PASSWORD}\"}")
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-          TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.token')
-          STATUS=$(echo "$LOGIN_RESPONSE" | jq -r '.status')
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '19'
 
-          if [ "$STATUS" != "ok" ] || [ -z "$TOKEN" ]; then
-            echo "Login failed"
-            exit 1
-          fi
+      - name: Install dependencies
+        run: npm install
 
-          curl -X PUT https://api-barbarpotato.vercel.app/webhook/update-lab \
-            -H "Authorization: Bearer $TOKEN"
+      - name: Build the Next.js app
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out  # Path to the out folder after npm run build
