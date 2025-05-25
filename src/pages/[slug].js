@@ -198,20 +198,12 @@ export default function ArticlePage({ article, recommendedPosts }) {
                                     key={item.id}
                                     style={{
                                         marginLeft: (item.level - 1) * 12,
+                                        padding: '6px 0',
                                         backgroundColor: '#1E1E1E',
-                                        padding: tocVisible ? '12px' : '4px',
-                                        borderTopRightRadius: 12,
-                                        borderBottomRightRadius: 12,
-                                        overflowX: 'hidden',
                                         color: 'white',
-                                        maxHeight: '80vh',
-                                        overflowY: 'auto',
-                                        boxShadow: '2px 2px 8px rgba(0,0,0,0.3)',
-                                        transition: 'width 0.3s ease, padding 0.1s ease, opacity 0.1s ease',
-                                        width: tocVisible ? '240px' : '20px',
                                         fontFamily: 'sans-serif',
                                         fontSize: '0.9em',
-                                        opacity: tocVisible ? 1 : 0.4 // ← transition target
+                                        opacity: tocVisible ? 1 : 0.4,
                                     }}
                                 >
                                     <a
@@ -219,10 +211,7 @@ export default function ArticlePage({ article, recommendedPosts }) {
                                         style={{
                                             color: '#f0f0f0',
                                             textDecoration: 'none',
-                                            transition: 'color 0.2s',
                                         }}
-                                        onMouseOver={e => (e.target.style.color = '#8AB4F8')}
-                                        onMouseOut={e => (e.target.style.color = '#f0f0f0')}
                                     >
                                         {item.text}
                                     </a>
