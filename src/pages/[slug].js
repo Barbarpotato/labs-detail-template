@@ -197,6 +197,7 @@ export default function ArticlePage({ article, recommendedPosts }) {
                                 <div
                                     key={item.id}
                                     style={{
+                                        marginLeft: (item.level - 1) * 12,
                                         backgroundColor: '#1E1E1E',
                                         padding: tocVisible ? '12px' : '4px',
                                         borderTopRightRadius: 12,
