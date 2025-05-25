@@ -1,8 +1,11 @@
 import Head from 'next/head';
+import { FaArrowLeft } from 'react-icons/fa';
+import { AiOutlineCalendar } from "react-icons/ai";
 import { MdSupportAgent } from "react-icons/md";
 import {
-    Box, Button, Center, Heading, Image,
-    useDisclosure, VStack, Divider
+    Box, Button, Heading, HStack,
+    useDisclosure, VStack, Divider,
+    Flex, Text, TagLabel, Tag, WrapItem, Wrap
 } from "@chakra-ui/react";
 import { Fragment, useEffect, useRef, useState } from 'react';
 
@@ -158,7 +161,7 @@ export default function ArticlePage({ article, recommendedPosts }) {
                         onMouseLeave={() => setTocVisible(false)}
                         style={{
                             backgroundColor: '#1E1E1E',
-                            padding: tocVisible ? '12px' : '4px',
+                            padding: tocVisible ? '12px' : 0,
                             borderTopRightRadius: 12,
                             borderBottomRightRadius: 12,
                             overflowX: 'hidden',
@@ -178,9 +181,13 @@ export default function ArticlePage({ article, recommendedPosts }) {
                                     writingMode: 'vertical-rl',
                                     transform: 'rotate(180deg)',
                                     cursor: 'pointer',
-                                    padding: '4px 0',
                                     color: '#aaa',
                                     fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '12px 0px 12px 12px',
                                 }}
                             >
                                 Table Of Contents
@@ -190,9 +197,20 @@ export default function ArticlePage({ article, recommendedPosts }) {
                                 <div
                                     key={item.id}
                                     style={{
-                                        marginLeft: (item.level - 1) * 12,
-                                        padding: '6px 0',
-                                        borderBottom: '1px solid #333',
+                                        backgroundColor: '#1E1E1E',
+                                        padding: tocVisible ? '12px' : '4px',
+                                        borderTopRightRadius: 12,
+                                        borderBottomRightRadius: 12,
+                                        overflowX: 'hidden',
+                                        color: 'white',
+                                        maxHeight: '80vh',
+                                        overflowY: 'auto',
+                                        boxShadow: '2px 2px 8px rgba(0,0,0,0.3)',
+                                        transition: 'width 0.3s ease, padding 0.1s ease, opacity 0.1s ease',
+                                        width: tocVisible ? '240px' : '20px',
+                                        fontFamily: 'sans-serif',
+                                        fontSize: '0.9em',
+                                        opacity: tocVisible ? 1 : 0.4 // ← transition target
                                     }}
                                 >
                                     <a
@@ -288,13 +306,53 @@ export default function ArticlePage({ article, recommendedPosts }) {
             </div >
 
             {/* Article Content */}
-            <article>
+            <article style={{ marginTop: '50px' }}>
+
+
                 <Box mx="auto" w={{ base: '70%', md: '35%' }}>
-                    <Heading color="whitesmoke">{article.title}</Heading>
+
+                    <Flex opacity={0.7} __hover={{ opacity: 1 }} alignItems="center" my={6} cursor="pointer" onClick={() => window.location.href = '/Labs/'}>
+                        <FaArrowLeft />
+                        <Text ml={2}>Back to Labs Content</Text>
+                    </Flex>
+
+                    <Wrap spacing={3} my={6}>
+                        {article.tags.map((tag, index) => (
+                            <WrapItem key={index}>
+                                <Tag
+                                    size="md"
+                                    borderRadius="full"
+                                    variant="solid"
+                                    colorScheme="gray"
+                                >
+                                    <TagLabel>{tag}</TagLabel>
+                                </Tag>
+                            </WrapItem>
+                        ))}
+                    </Wrap>
+
+                    <Heading my={6} color="whitesmoke">{article.title}</Heading>
+
+                    <HStack
+                        my={6}
+                        spacing={2}
+                        align="center"
+                        flexWrap="wrap"   // allows wrapping on small screens
+                    >
+                        <AiOutlineCalendar size={20} style={{ opacity: 0.7 }} />
+                        <Text
+                            fontSize={{ base: "xs", md: "sm" }}
+                            color="gray.500"
+                            whiteSpace={{ base: "normal", md: "nowrap" }}  // wrap on mobile, no wrap on desktop
+                        >
+                            {article.timestamp}
+                        </Text>
+                    </HStack>
+
                 </Box>
-                <Center pt={2} pb={10}>
-                    <Image src={article.image} w={{ base: '70%', md: '35%' }} borderRadius="lg" />
-                </Center>
+
+                <Divider mx="auto" w={{ base: '70%', md: '35%' }} my={6} />
+
                 <Box mx="auto" w={{ base: '70%', md: '35%' }} display="flex" justifyContent="center">
                     <div
                         className="content"
@@ -367,6 +425,7 @@ export default function ArticlePage({ article, recommendedPosts }) {
                 )}
                 <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
             </article >
+
         </>
     );
 }
