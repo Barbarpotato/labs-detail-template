@@ -23,10 +23,7 @@ function Navigation() {
     const navItems = [
         { label: 'Home', path: '/' },
         { label: 'About', path: '/About/' },
-        { label: 'Labs', path: '/Labs/' },
-        { label: 'Projects', path: '/Projects/' },
-        { label: 'Experiences', path: '/Experiences/' },
-        { label: 'Badges', path: '/Badges/' },
+        { label: 'Labs', path: '/Labs/' }
     ];
 
     useEffect(() => {

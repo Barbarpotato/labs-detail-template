@@ -1,15 +1,13 @@
 import Head from 'next/head';
 import { FaArrowLeft } from 'react-icons/fa';
 import { AiOutlineCalendar } from "react-icons/ai";
-import { MdSupportAgent } from "react-icons/md";
 import {
-    Box, Button, Heading, HStack,
+    Box, Heading, HStack,
     useDisclosure, VStack, Divider,
     Flex, Text, TagLabel, Tag, WrapItem, Wrap
 } from "@chakra-ui/react";
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import Darwin from '../components/Darwin';
 import BlogCard from '@/components/BlogCard';
 
 import 'prismjs/themes/prism-tomorrow.css';
@@ -381,39 +379,6 @@ export default function ArticlePage({ article, recommendedPosts }) {
                 )}
 
 
-                {/* Floating Button */}
-                {isMobile ? (
-                    <button
-                        ref={btnRef}
-                        onClick={onOpen}
-                        style={{
-                            opacity: "70%",
-                            position: 'fixed',
-                            bottom: '20px',
-                            right: '20px',
-                            zIndex: 1000,
-                            backgroundColor: '#ff79c6',
-                            borderRadius: '50%',
-                            padding: '12px',
-                            border: 'none'
-                        }}
-                    >
-                        <MdSupportAgent size={30} color="white" />
-                    </button>
-                ) : (
-                    <Button
-                        ref={btnRef}
-                        position="fixed"
-                        right="20px"
-                        bottom="20px"
-                        zIndex={1000}
-                        colorScheme="purple"
-                        onClick={onOpen}
-                    >
-                        Ask Darwin AI
-                    </Button>
-                )}
-                <Darwin btnRef={btnRef} isOpen={isOpen} onOpen={onOpen} onClose={onClose} content={article.description} />
             </article >
 
         </>

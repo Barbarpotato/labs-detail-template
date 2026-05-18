@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Flex, Text, Link, SimpleGrid, Icon, Heading } from '@chakra-ui/react';
-import { FaGithub, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa';
 
 const Footer = () => {
     const primaryFontColor = '#faf9ff';
@@ -12,15 +12,13 @@ const Footer = () => {
         { label: 'LinkedIn', href: 'https://www.linkedin.com/in/darmawan-jr-b16135220/' },
         { label: 'Instagram', href: 'https://www.instagram.com/darmajr94?igsh=OGgwNTRnaGFxeTY1' },
         { label: 'WhatsApp', href: 'https://api.whatsapp.com/send/?phone=6282148282424&text&type=phone_number&app_absent=0' },
+        { label: 'TikTok', href: 'https://www.tiktok.com/@darma.devforeverybody' }
     ];
 
     const resourcesLinks = [
         { label: 'Home', href: 'https://barbarpotato.github.io/' },
         { label: 'About', href: 'https://barbarpotato.github.io/About/' },
-        { label: 'Labs', href: 'https://barbarpotato.github.io/Labs/' },
-        { label: 'Projects', href: 'https://barbarpotato.github.io/Projects/' },
-        { label: 'Experiences', href: 'https://barbarpotato.github.io/Experiences/' },
-        { label: 'Badges', href: 'https://barbarpotato.github.io/Badges/' },
+        { label: 'Labs', href: 'https://barbarpotato.github.io/Labs/' }
     ];
 
     return (
@@ -91,6 +89,9 @@ const Footer = () => {
                             </Link>
                             <Link href="https://www.instagram.com/darmajr94?igsh=OGgwNTRnaGFxeTY1" target="_blank" color="gray.400" _hover={{ color: 'pink.300' }} aria-label="Visit my Instagram profile">
                                 <Icon as={FaInstagram} boxSize={6} />
+                            </Link>
+                            <Link href="https://www.tiktok.com/@darma.devforeverybody" target="_blank" color="gray.400" _hover={{ color: 'pink.300' }} aria-label="Visit my TikTok profile">
+                                <Icon as={FaTiktok} boxSize={6} />
                             </Link>
                         </Flex>
 
